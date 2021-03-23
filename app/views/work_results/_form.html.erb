@@ -1,0 +1,28 @@
+<%= form_with(model: work_result, local: true) do |form| %>
+  <% if work_result.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(work_result.errors.count, "error") %> prohibited this work_result from being saved:</h2>
+
+      <ul>
+        <% work_result.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :writing %>
+    <%= form.number_field :writing %>
+  </div>
+
+  <div class="field">
+    <%= form.label :revision %>
+    <%= form.number_field :revision %>
+  </div>
+  <%= form.hidden_field :time_card_id, value: @time_card.id %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
