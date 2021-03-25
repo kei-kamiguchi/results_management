@@ -1,0 +1,33 @@
+<p>
+  <strong>名前:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>メールアドレス:</strong>
+  <%= @user.email %>
+</p>
+
+<h1><%= "#{@year}年の勤務表" %></h1>
+<table>
+  <thead>
+    <tr>
+      <th>月</th>
+      <th>勤務時間</th>
+      <th>テキスト執筆数</th>
+      <th>テキスト修正数</th>
+    </tr>
+  </thead>
+  <% each_month_in_year(@year) do |date, index| %>
+  <tbody>
+    <tr>
+      <td><%= date_in_japanese(date, :month) %></td>
+      <% if @time_cards[index] %>
+        <td><%= @user.time_cards.where(year: @year, month: index+1).sum(:id) %></td>
+        <td><%= time_diff_str(@user.time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds }) %></td>
+        <td><%= @time_cards[index-1].present? ? @user.work_results.last.writing - @user.work_results.where(time_card_id: @time_cards[index-1].id).last.writing : @user.work_results.last.writing %></td>
+      <% end %>
+    </tr>
+  </tbody>
+  <% end %>
+</table>

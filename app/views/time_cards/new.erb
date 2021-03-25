@@ -2,14 +2,17 @@
 
     <p><%= "#{date_in_japanese}" %></p>
     <p>現在時刻：<span id="RealtimeClockArea2"></span></p>
-    <p>現在状況</p>
+    <p>現在状況：<%= @time_card.working_status %></p>
 
     <%= form_with(model: @time_card, remote: true) do |form| %>
       <%= form.submit('出社', name: 'in', disabled: !!@time_card.in_at, class: 'btn btn-default') %>
-      <%#= submit_tag('退社', name: 'out', disabled: !@time_card.in_at || !!@time_card.out_at, class: 'btn btn-default') %>
-      <%= link_to '退社', new_work_result_path(time_card_id: @time_card.id) %>
-      <%= link_to '勤務表確認', time_cards_path %>
-<% end %>
+    <% end %>
+    <%= form_with(model: @time_card, remote: true, method: :patch) do |form| %>
+      <%= form.submit('退社', name: 'out', disabled: !@time_card.in_at || !!@time_card.out_at, class: 'btn btn-default') %>
+    <% end %>
+    <%= link_to '実績を登録する', edit_work_result_path(@time_card.work_result) if @time_card.work_result.present? %>
+    <%= link_to '勤務表を確認する', time_cards_path %>
+
 <script>
 function set2fig(num) {
    // 桁数が1桁だったら先頭に0を加えて2桁に調整する

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_23_103055) do
+ActiveRecord::Schema.define(version: 2021_03_23_105624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 2021_03_23_103055) do
     t.datetime "out_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_time_cards_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -40,13 +42,17 @@ ActiveRecord::Schema.define(version: 2021_03_23_103055) do
   end
 
   create_table "work_results", force: :cascade do |t|
-    t.integer "writing"
-    t.integer "revision"
+    t.integer "writing", default: 0
+    t.integer "revision", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "time_card_id", null: false
+    t.bigint "user_id", null: false
     t.index ["time_card_id"], name: "index_work_results_on_time_card_id"
+    t.index ["user_id"], name: "index_work_results_on_user_id"
   end
 
+  add_foreign_key "time_cards", "users"
   add_foreign_key "work_results", "time_cards"
+  add_foreign_key "work_results", "users"
 end

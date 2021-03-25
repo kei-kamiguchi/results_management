@@ -8,9 +8,5 @@
   <%= @work_result.revision %>
 </p>
 
-    <%= form_with(model: @time_card, remote: true, method: :patch) do |form| %>
-      <%= form.submit('退社', name: 'out', disabled: !@time_card.in_at || !!@time_card.out_at, class: 'btn btn-default') %>
-<% end %>
-
 <%= link_to 'Edit', edit_work_result_path(@work_result) %> |
 <%= link_to 'Back', work_results_path %>

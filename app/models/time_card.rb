@@ -1,5 +1,6 @@
 class TimeCard < ApplicationRecord
-  has_one :work_result
+  has_one :work_result, dependent: :destroy
+  belongs_to :user
 
   validates :year, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :month, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
@@ -10,15 +11,20 @@ class TimeCard < ApplicationRecord
 
   class << self
     # 今日のタイムカードを取得する
-    def today
+    def today(user)
       date = Date.today
-      condition = { year: date.year, month: date.month, day: date.day }
+      condition = { user: user, year: date.year, month: date.month, day: date.day }
       self.find_by(condition) || self.new(condition)
     end
 
     # 指定年月のタイムカードを取得する
-    def monthly(year, month)
-      self.where(year: year, month: month).order(:day).all
+    def monthly(user, year, month)
+      self.where(user: user, year: year, month: month).order(:day).all
+    end
+
+    # 指定年のタイムカードを取得する
+    def yearly(user, year)
+      self.where(user: user, year: year).order(:month).all
     end
   end
 
@@ -26,11 +32,11 @@ class TimeCard < ApplicationRecord
   def working_status
     case [!!in_at, !!out_at]
     when [false, false]
-      :not_arrived # 未出社
+      "未出社"
     when [true, false]
-      :working # 勤務中
+      "勤務中"
     when [true, true]
-      :left # 退社済
+      "退社済"
     end
   end
 

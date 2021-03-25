@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :users
   root 'time_cards#new'
+  devise_for :users
+  namespace :admin do
+    resources :users
+  end
   resources :time_cards
   resources :work_results
   if Rails.env.development?

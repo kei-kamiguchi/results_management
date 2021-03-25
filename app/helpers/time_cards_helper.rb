@@ -6,6 +6,8 @@ module TimeCardsHelper
       "#{date.year}年#{date.month}月#{date.day}日 #{day_of_the_week_in_japanese(date)}"
     when :month_day
       "#{date.month}月#{date.day}日"
+    when :month
+      "#{date.month}月"
     end
   end
 
@@ -51,6 +53,16 @@ module TimeCardsHelper
     while date.month == month do
       yield date, date.day - 1
       date = date.next_day
+    end
+  end
+
+  # 指定した年月の各月とインデックスを引数としてブロックを実行する
+  def each_month_in_year(year)
+    date = Date.new(year, 1)
+
+    while date.year == year do
+      yield date, date.month - 1
+      date = date.next_month
     end
   end
 
