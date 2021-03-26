@@ -16,17 +16,20 @@
       <th>勤務時間</th>
       <th>テキスト執筆数</th>
       <th>テキスト修正数</th>
+      <th>執筆ペース</th>
+      <th>修正ペース</th>
     </tr>
   </thead>
-  <% each_month_in_year(@year) do |date, index| %>
+  <% each_month_in_year(@year) do |month, index| %>
   <tbody>
     <tr>
-      <td><%= date_in_japanese(date, :month) %></td>
-      <% if @time_cards[index] %>
-        <td><%= @user.time_cards.where(year: @year, month: index+1).sum(:id) %></td>
-        <td><%= time_diff_str(@user.time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds }) %></td>
-        <td><%= @time_cards[index-1].present? ? @user.work_results.last.writing - @user.work_results.where(time_card_id: @time_cards[index-1].id).last.writing : @user.work_results.last.writing %></td>
-      <% end %>
+      <td><%= date_in_japanese(month, :month) %></td>
+      <td><%= time_diff_str(@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds }) %></td>
+      <td><%= writings_in_month(@time_cards, @year, index+1) %></td>
+      <td><%= revisions_in_month(@time_cards, @year, index+1) %></td>
+      <%# binding.irb %>
+      <td><%= writings_in_month(@time_cards, @year, index+1) / (@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds } / 3600).to_i %></td>
+      <td><%= revisions_in_month(@time_cards, @year, index+1) / (@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds } / 3600).to_i %></td>
     </tr>
   </tbody>
   <% end %>

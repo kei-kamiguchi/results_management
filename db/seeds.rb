@@ -17,15 +17,31 @@ end
                password: password,
                )
 end
-1000.times do |n|
-  date = Date.today - (1..60).to_a.sample
+  def time_diff_str(second)
+    hours, rest = second.divmod(60 * 60)
+    minutes, rest = rest.divmod(60)
+
+    '%02d' % hours + ':' '%02d' % minutes
+  end
+
+500.times do |n|
+  date = Date.today - n
   year = date.year
   month = date.month
   day = date.day
-  in_at = DateTime.new(year, month, day, 12, 30, 45)
-  out_at = DateTime.new(year, month, day, 19, 15, 20)
-  TimeCard.create!(year: year, month: month, day: day, in_at: in_at, out_at: out_at, user_id: User.order("RANDOM()").first.id)
+  in_at = DateTime.new(year, month, day, 11, 30, 45)
+  out_at = DateTime.new(year, month, day, 13, 15, 20)
+  TimeCard.create!(year: year, month: month, day: day, in_at: in_at, out_at: out_at, user_id: User.where(admin: false).order("RANDOM()").first.id, )
 end
-TimeCard.order(in_at: :asc).each_with_index do |time_card, index|
-  WorkResult.create!(writing: index + 1, revision: index - 5, time_card_id: time_card.id, user_id: time_card.user.id)
+500.times do |n|
+  date = Date.today + n
+  year = date.year
+  month = date.month
+  day = date.day
+  in_at = DateTime.new(year, month, day, 11, 30, 45)
+  out_at = DateTime.new(year, month, day, 13, 15, 20)
+  TimeCard.create!(year: year, month: month, day: day, in_at: in_at, out_at: out_at, user_id: User.where(admin: false).order("RANDOM()").first.id, )
+end
+TimeCard.all.order(in_at: :asc).each_with_index do |time_card, index|
+  WorkResult.create!(writing: index+1, revision: index+2, time_card_id: time_card.id, user_id: time_card.user.id)
 end

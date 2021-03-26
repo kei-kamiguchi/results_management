@@ -23,7 +23,7 @@ class Admin::UsersController < ApplicationController
     today = Date.today
     @year = today.year
     @month = today.month
-    @time_cards = yearly_time_cards(@user, @year)
+    @time_cards = @user.time_cards
   end
 
   def edit
@@ -64,14 +64,13 @@ class Admin::UsersController < ApplicationController
     end
 
     # 指定年の全ての月のタイムカードの配列を取得する（タイムカードが存在しない月はnil）
-    def yearly_time_cards(user, year)
-      number_of_monthes_in_year = Date.new(year, 1).next_year.prev_year.year
-      results = Array.new(number_of_monthes_in_year) # 年の月数分nilで埋めた配列を用意
-      time_cards = TimeCard.yearly(user, year)
-      time_cards.each do |card|
-        results[card.month - 1] = card
-      end
-      results
-    end
+    # def yearly_time_cards(user, year)
+    #   results = Array.new(12) # 年の月数分nilで埋めた配列を用意
+    #   time_cards = TimeCard.yearly(user, year)
+    #   time_cards.each do |time_card|
+    #     results[time_card.month - 1] = time_card
+    #   end
+    #   results
+    # end
 
 end

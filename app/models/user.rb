@@ -12,4 +12,5 @@ class User < ApplicationRecord
       throw :abort
     end
   end
+
 end
