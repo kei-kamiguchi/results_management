@@ -4,6 +4,13 @@ class Admin::UsersController < ApplicationController
 
   def index
     @users = User.where.not(id: current_user.id, admin: true)
+    if params[:month]
+      @date = params[:month].to_date
+    else
+      @date = Date.today
+    end
+    @year = @date.year
+    @month = @date.month
   end
 
   def new
@@ -20,9 +27,13 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
-    today = Date.today
-    @year = today.year
-    @month = today.month
+    if params[:year]
+      @date = params[:year].to_date
+    else
+      @date = Date.today
+    end
+    @year = @date.year
+    @month = @date.month
     @time_cards = @user.time_cards
   end
 

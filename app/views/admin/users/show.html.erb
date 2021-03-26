@@ -8,7 +8,9 @@
   <%= @user.email %>
 </p>
 
-<h1><%= "#{@year}年の勤務表" %></h1>
+<h1><%= "#{@year}年の実績" %></h1>
+<%= link_to "前の年", year: @date.prev_year %>
+<%= link_to "次の年", year: @date.next_year %>
 <table>
   <thead>
     <tr>
@@ -27,9 +29,13 @@
       <td><%= time_diff_str(@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds }) %></td>
       <td><%= writings_in_month(@time_cards, @year, index+1) %></td>
       <td><%= revisions_in_month(@time_cards, @year, index+1) %></td>
-      <%# binding.irb %>
-      <td><%= writings_in_month(@time_cards, @year, index+1) / (@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds } / 3600).to_i %></td>
-      <td><%= revisions_in_month(@time_cards, @year, index+1) / (@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds } / 3600).to_i %></td>
+      <% if @time_cards.where(year: @year, month: index+1).present? %>
+        <td><%= writings_in_month(@time_cards, @year, index+1) / (@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds } / 3600).to_i %></td>
+        <td><%= revisions_in_month(@time_cards, @year, index+1) / (@time_cards.where(year: @year, month: index+1).sum { |hash| hash.work_hours_in_seconds } / 3600).to_i %></td>
+      <% else %>
+        <td>0</td>
+        <td>0</td>
+      <% end %>
     </tr>
   </tbody>
   <% end %>
